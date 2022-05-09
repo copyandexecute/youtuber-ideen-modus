@@ -40,7 +40,7 @@ java {
 }
 
 bukkit {
-    name = "ExamplePlugin"
+    name = "youtuber-ideen-modus"
     apiVersion = "1.18"
     authors = listOf(
         "NoRiskk",

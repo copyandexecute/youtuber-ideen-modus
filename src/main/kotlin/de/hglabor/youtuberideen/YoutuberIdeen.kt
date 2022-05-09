@@ -1,5 +1,6 @@
 package de.hglabor.youtuberideen
 
+import de.hglabor.youtuberideen.wichtiger.SkyIslandGenerator
 import net.axay.kspigot.main.KSpigot
 
 class YoutuberIdeen : KSpigot() {
@@ -12,6 +13,7 @@ class YoutuberIdeen : KSpigot() {
     }
 
     override fun startup() {
+        SkyIslandGenerator
         logger.info("The Plugin was enabled!")
     }
 
