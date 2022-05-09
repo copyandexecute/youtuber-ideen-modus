@@ -15,11 +15,10 @@ import org.bukkit.WorldCreator
 import org.bukkit.craftbukkit.v1_18_R2.CraftWorld
 import org.bukkit.event.player.PlayerJoinEvent
 import java.io.File
-import java.util.logging.Logger
 import kotlin.random.Random
 
 object SkyIslandGenerator {
-    private val world: World
+    var world: World
     private val schematicFolder: File = File("${Manager.dataFolder}/schematics/")
     private val schematics = mutableMapOf<String, Map<SimpleLocation3D, BlockState>>()
     private val placeableBlocks = mutableListOf<PlaceableBlock>()
@@ -28,7 +27,11 @@ object SkyIslandGenerator {
     private var ISLAND_DISTANCE = 100
 
     init {
-        Bukkit.getWorld("world_pvp")?.worldFolder?.deleteRecursively()
+        world = WorldCreator("world_pvp").generator(VoidGenerator()).createWorld()!!
+
+        if (Bukkit.getWorld("world_pvp")?.worldFolder?.deleteRecursively() == true) {
+            Manager.logger.info("Deleted world_pvp")
+        }
 
         world = WorldCreator("world_pvp").generator(VoidGenerator()).createWorld()!!
         world.worldBorder.size = 80 * 2.0
