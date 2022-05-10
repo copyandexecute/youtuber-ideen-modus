@@ -14,6 +14,8 @@ version = "${mcVersion}_v1"
 
 repositories {
     mavenCentral()
+    maven("https://repo.md-5.net/content/groups/public/")
+    maven("https://repo.dmulloy2.net/repository/public/")
 }
 
 dependencies {
@@ -22,6 +24,8 @@ dependencies {
 
     // KSpigot dependency
     implementation("net.axay:kspigot:1.18.2")
+    compileOnly("com.comphenix.protocol:ProtocolLib:4.7.0")
+    compileOnly("LibsDisguises:LibsDisguises:10.0.28")
 }
 
 tasks {
@@ -45,6 +49,7 @@ bukkit {
     authors = listOf(
         "NoRiskk",
     )
+    depend = listOf("LibsDisguises", "ProtocolLib")
     main = "$group.youtuberideen.YoutuberIdeen"
     version = getVersion().toString()
     libraries = listOf(
