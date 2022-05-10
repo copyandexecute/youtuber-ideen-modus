@@ -2,6 +2,7 @@ package de.hglabor.youtuberideen
 
 import de.hglabor.youtuberideen.bastighg.CakeListener
 import de.hglabor.youtuberideen.bastighg.SkinChanger
+import de.hglabor.youtuberideen.castcrafter.LevitationListener
 import de.hglabor.youtuberideen.hugo.BearManager
 import de.hglabor.youtuberideen.sasukey.LilyPadListener
 import de.hglabor.youtuberideen.seltix.PvPBotManager
@@ -26,6 +27,7 @@ class YoutuberIdeen : KSpigot() {
         BearManager
         SkinChanger
         CakeListener
+        LevitationListener
         logger.info("The Plugin was enabled!")
     }
 
