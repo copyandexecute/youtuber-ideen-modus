@@ -1,5 +1,6 @@
 package de.hglabor.youtuberideen
 
+import de.hglabor.youtuberideen.hugo.BearManager
 import de.hglabor.youtuberideen.sasukey.LilyPadListener
 import de.hglabor.youtuberideen.seltix.PvPBotManager
 import de.hglabor.youtuberideen.veto.GolemManager
@@ -20,6 +21,7 @@ class YoutuberIdeen : KSpigot() {
         GolemManager
         PvPBotManager
         LilyPadListener
+        BearManager
         logger.info("The Plugin was enabled!")
     }
 
