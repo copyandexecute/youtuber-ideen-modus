@@ -23,7 +23,9 @@ dependencies {
     paperDevBundle("$mcVersion-R0.1-SNAPSHOT")
 
     // KSpigot dependency
-    implementation("net.axay:kspigot:1.18.2")
+    compileOnly("net.axay:kspigot:1.18.2")
+    compileOnly("org.apache.httpcomponents:httpclient:4.5.13")
+    compileOnly("org.apache.httpcomponents:httpmime:4.5.13")
     compileOnly("com.comphenix.protocol:ProtocolLib:4.7.0")
     compileOnly("LibsDisguises:LibsDisguises:10.0.28")
 }
@@ -54,5 +56,7 @@ bukkit {
     version = getVersion().toString()
     libraries = listOf(
         "net.axay:kspigot:1.18.2",
+        "org.apache.httpcomponents:httpclient:4.5.13",
+        "org.apache.httpcomponents:httpmime:4.5.13"
     )
 }
