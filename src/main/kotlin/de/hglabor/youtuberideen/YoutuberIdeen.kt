@@ -1,5 +1,6 @@
 package de.hglabor.youtuberideen
 
+import de.hglabor.youtuberideen.sasukey.LilyPadListener
 import de.hglabor.youtuberideen.seltix.PvPBotManager
 import de.hglabor.youtuberideen.veto.GolemManager
 import de.hglabor.youtuberideen.wichtiger.SkyIslandGenerator
@@ -18,6 +19,7 @@ class YoutuberIdeen : KSpigot() {
         SkyIslandGenerator
         GolemManager
         PvPBotManager
+        LilyPadListener
         logger.info("The Plugin was enabled!")
     }
 

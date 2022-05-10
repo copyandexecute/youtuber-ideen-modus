@@ -25,6 +25,7 @@ object SkyIslandGenerator {
     private val islandLocations = mutableSetOf<Location>()
     private var MAX_MS_PER_TICK = 20L
     private var ISLAND_DISTANCE = 100
+    var MIN_Y_ISLAND = 100
 
     init {
         world = WorldCreator("world_pvp").generator(VoidGenerator()).createWorld()!!
@@ -76,7 +77,7 @@ object SkyIslandGenerator {
     }
 
     private fun loadIslandSchematics() {
-        schematicFolder.listFiles { _, name -> name.endsWith(".schem") }.forEach {
+        schematicFolder.listFiles { _, name -> name.endsWith(".schem") }?.forEach {
             schematics[it.nameWithoutExtension] = SchematicReader.parseSchematic(it.inputStream())
             Manager.logger.info("${it.name} wurde geladen")
         }
@@ -86,18 +87,11 @@ object SkyIslandGenerator {
         val size = world.worldBorder.size.toInt() / 2
         val x = Random.nextInt(-size, size).toDouble()
         val z = Random.nextInt(-size, size).toDouble()
-        val location = Location(world, x, Random.nextInt(100, 200).toDouble(), z)
+        val location = Location(world, x, Random.nextInt(MIN_Y_ISLAND, 200).toDouble(), z)
         return if (islandLocations.any { it.distanceSquared(location) < ISLAND_DISTANCE }) getSafeArenaSpawn() else location
     }
 
     data class PlaceableBlock(val loc: SimpleLocation3D, val state: BlockState) {
-
-        fun setBlockInNativeWorld(world: World, x: Int, y: Int, z: Int, state: BlockState, applyPhysics: Boolean) {
-            val nmsWorld: Level = (world as CraftWorld).handle
-            val bp = BlockPos(x, y, z)
-            nmsWorld.setBlock(bp, state, if (applyPhysics) 3 else 2)
-        }
-
         fun setBlockInNativeChunk(world: World, applyPhysics: Boolean = false) {
             val nmsWorld: Level = (world as CraftWorld).handle
             val chunk = nmsWorld.getChunk(loc.x.toInt() shr 4, loc.z.toInt() shr 4)
