@@ -1,5 +1,6 @@
 package de.hglabor.youtuberideen.einfachgustaf
 
+import de.hglabor.youtuberideen.holzkopf.BannerManager.isLobby
 import net.axay.kspigot.chat.KColors
 import net.axay.kspigot.chat.sendMessage
 import net.axay.kspigot.event.listen
@@ -9,6 +10,7 @@ import net.axay.kspigot.extensions.bukkit.toComponent
 import net.axay.kspigot.extensions.geometry.blockLoc
 import net.axay.kspigot.extensions.onlinePlayers
 import net.axay.kspigot.runnables.task
+import org.bukkit.Effect
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.bukkit.event.player.PlayerMoveEvent
@@ -23,6 +25,7 @@ object PlayerHider {
     init {
         task(period = 20) {
             onlinePlayers.forEach {
+                if (it.isLobby()) return@forEach
                 val item = it.inventory.itemInMainHand
                 if (prevPositions[it.uniqueId] != it.location.blockLoc || (!item.type.isBlock || item.type.isAir)) {
                     prevPositions[it.uniqueId] = it.location.blockLoc
@@ -40,6 +43,9 @@ object PlayerHider {
                 fakeBlock.passengers.forEach { entity -> entity.discard() }
                 fakeBlock.discard()
                 it.player.world.playSound(it.player.location, fakeBlock.blockData.soundGroup.breakSound, 1f, 1f)
+                it.player.world.playEffect(it.to!!.blockLoc.add(0.0, 0.5, 0.0),
+                    Effect.STEP_SOUND,
+                    fakeBlock.blockData.material)
                 fakeBlocks.remove(it.player.uniqueId)
                 it.player.appear()
                 it.player.sendMessage("Sichtbar!".toComponent().color(KColors.RED))
