@@ -7,6 +7,7 @@ import de.hglabor.youtuberideen.einfachgustaf.PlayerHider
 import de.hglabor.youtuberideen.hugo.BearManager
 import de.hglabor.youtuberideen.sasukey.LilyPadListener
 import de.hglabor.youtuberideen.seltix.PvPBotManager
+import de.hglabor.youtuberideen.stegi.BloodListener
 import de.hglabor.youtuberideen.veto.GolemManager
 import de.hglabor.youtuberideen.wichtiger.SkyIslandGenerator
 import net.axay.kspigot.main.KSpigot
@@ -30,6 +31,7 @@ class YoutuberIdeen : KSpigot() {
         CakeListener
         LevitationListener
         PlayerHider
+        BloodListener
         logger.info("The Plugin was enabled!")
     }
 
