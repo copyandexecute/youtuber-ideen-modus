@@ -1,14 +1,8 @@
 package de.hglabor.youtuberideen
 
-import de.hglabor.youtuberideen.bastighg.CakeListener
-import de.hglabor.youtuberideen.bastighg.SkinChanger
-import de.hglabor.youtuberideen.castcrafter.LevitationListener
-import de.hglabor.youtuberideen.einfachgustaf.PlayerHider
-import de.hglabor.youtuberideen.holzkopf.BannerManager
-import de.hglabor.youtuberideen.hugo.BearManager
-import de.hglabor.youtuberideen.sasukey.LilyPadListener
+import de.hglabor.youtuberideen.game.GamePhaseManager
+import de.hglabor.youtuberideen.sasukey.LilyPadManager
 import de.hglabor.youtuberideen.seltix.PvPBotManager
-import de.hglabor.youtuberideen.stegi.BloodListener
 import de.hglabor.youtuberideen.veto.GolemManager
 import de.hglabor.youtuberideen.wichtiger.SkyIslandGenerator
 import net.axay.kspigot.main.KSpigot
@@ -24,16 +18,7 @@ class YoutuberIdeen : KSpigot() {
 
     override fun startup() {
         SkyIslandGenerator
-        GolemManager
-        PvPBotManager
-        LilyPadListener
-        BearManager
-        SkinChanger
-        CakeListener
-        LevitationListener
-        PlayerHider
-        BloodListener
-        BannerManager
+        GamePhaseManager
         logger.info("The Plugin was enabled!")
     }
 
@@ -43,4 +28,5 @@ class YoutuberIdeen : KSpigot() {
 }
 
 val Manager by lazy { YoutuberIdeen.INSTANCE }
+val Prefix: String = "[Youtuber-Ideen]"
 

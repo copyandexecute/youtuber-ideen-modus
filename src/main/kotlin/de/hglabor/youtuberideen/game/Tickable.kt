@@ -1,0 +1,3 @@
+interface Tickable {
+    fun onTick()
+}

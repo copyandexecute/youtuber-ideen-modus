@@ -15,17 +15,15 @@ import org.bukkit.util.Vector
 import kotlin.random.Random
 
 object BearManager {
-    init {
-        listen<PlayerJoinEvent> {
-            //Purpur hahahahah YOOOO
-            it.player.addAttachment(Manager, "allow.ride.polar_bear", true)
-            it.player.addAttachment(Manager, "allow.ride.panda", true)
-        }
-        listen<PlayerInteractEvent> {
-            //TODO add cooldown...
-            if (it.player.isInsideVehicle && (it.player.vehicle?.type == EntityType.POLAR_BEAR || it.player.vehicle?.type == EntityType.PANDA)) {
-                it.player.shootFlames()
-            }
+    val joinEvent = listen<PlayerJoinEvent> {
+        //Purpur hahahahah YOOOO
+        it.player.addAttachment(Manager, "allow.ride.polar_bear", true)
+        it.player.addAttachment(Manager, "allow.ride.panda", true)
+    }
+    val flameEvent = listen<PlayerInteractEvent> {
+        //TODO add cooldown...
+        if (it.player.isInsideVehicle && (it.player.vehicle?.type == EntityType.POLAR_BEAR || it.player.vehicle?.type == EntityType.PANDA)) {
+            it.player.shootFlames()
         }
     }
 
@@ -63,10 +61,12 @@ object BearManager {
 
     private fun LivingEntity.shootSingleFlame(playerDirection: Vector, particleLocation: Location) {
         val particlePath = playerDirection.clone()
-        particlePath.add(Vector(
-            Math.random() - Math.random(),
-            Math.random() - Math.random(),
-            Math.random() - Math.random())
+        particlePath.add(
+            Vector(
+                Math.random() - Math.random(),
+                Math.random() - Math.random(),
+                Math.random() - Math.random()
+            )
         )
         val offsetLocation: Location = particlePath.toLocation(world)
         world.spawnParticle(

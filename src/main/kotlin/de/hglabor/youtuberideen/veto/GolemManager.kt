@@ -8,16 +8,8 @@ import org.bukkit.event.player.PlayerJoinEvent
 
 //Buuuutz digga
 object GolemManager {
-    init {
-        listen<PlayerJoinEvent> {
-            //Purpur hahahahah YOOOO
-            it.player.addAttachment(Manager, "allow.ride.iron_golem", true)
-        }
-
-        command("flyinggolem") {
-            runs {
-                FlyingIronGolem(this.world).spawnAt(this.player.location)
-            }
-        }
+    val joinEvent = listen<PlayerJoinEvent> {
+        //Purpur hahahahah YOOOO
+        it.player.addAttachment(Manager, "allow.ride.iron_golem", true)
     }
 }

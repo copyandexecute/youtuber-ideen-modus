@@ -18,7 +18,7 @@ import java.io.File
 import kotlin.random.Random
 
 object SkyIslandGenerator {
-    var world: World
+    val world: World = WorldCreator("world_pvp").generator(VoidGenerator()).createWorld()!!
     private val schematicFolder: File = File("${Manager.dataFolder}/schematics/")
     private val schematics = mutableMapOf<String, Map<SimpleLocation3D, BlockState>>()
     private val placeableBlocks = mutableListOf<PlaceableBlock>()
@@ -28,13 +28,6 @@ object SkyIslandGenerator {
     var MIN_Y_ISLAND = 100
 
     init {
-        world = WorldCreator("world_pvp").generator(VoidGenerator()).createWorld()!!
-
-        if (Bukkit.getWorld("world_pvp")?.worldFolder?.deleteRecursively() == true) {
-            Manager.logger.info("Deleted world_pvp")
-        }
-
-        world = WorldCreator("world_pvp").generator(VoidGenerator()).createWorld()!!
         world.worldBorder.size = 80 * 2.0
 
         schematicFolder.mkdirs()
@@ -42,10 +35,6 @@ object SkyIslandGenerator {
         loadIslandSchematics()
 
         populate()
-
-        listen<PlayerJoinEvent> {
-            it.player.teleport(world.spawnLocation)
-        }
 
         listen<ServerTickStartEvent> {
             val stopTime = System.currentTimeMillis() + MAX_MS_PER_TICK

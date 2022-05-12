@@ -11,21 +11,20 @@ import org.bukkit.Material
 import org.bukkit.block.BlockFace
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.Firework
+import org.bukkit.entity.Player
 import org.bukkit.event.block.BlockPlaceEvent
 
-object CakeListener {
-    init {
-        listen<BlockPlaceEvent> {
-            val block = it.block
-            if (block.type != Material.CAKE) return@listen
-            if (block.getRelative(BlockFace.DOWN, 1).type != Material.CAKE) return@listen
-            if (block.getRelative(BlockFace.DOWN, 2).type != Material.CAKE) return@listen
-
-            CelebrateWinner(block.location)
-        }
+object CakeManager {
+    fun winEvent(callBack: (Player) -> (Unit)) = listen<BlockPlaceEvent> {
+        val block = it.block
+        if (block.type != Material.CAKE) return@listen
+        if (block.getRelative(BlockFace.DOWN, 1).type != Material.CAKE) return@listen
+        if (block.getRelative(BlockFace.DOWN, 2).type != Material.CAKE) return@listen
+        celebrateWinner(block.location)
+        callBack.invoke(it.player)
     }
 
-    private fun CelebrateWinner(location: Location) {
+    private fun celebrateWinner(location: Location) {
         task(howOften = 3, period = 5) {
             val fireWork = location.world!!.spawnEntity(location, EntityType.FIREWORK) as Firework
             fireWork.editMeta {

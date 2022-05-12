@@ -1,6 +1,5 @@
 package de.hglabor.youtuberideen.einfachgustaf
 
-import de.hglabor.youtuberideen.holzkopf.BannerManager.isLobby
 import net.axay.kspigot.chat.KColors
 import net.axay.kspigot.chat.sendMessage
 import net.axay.kspigot.event.listen
@@ -25,7 +24,6 @@ object PlayerHider {
     init {
         task(period = 20) {
             onlinePlayers.forEach {
-                if (it.isLobby()) return@forEach
                 val item = it.inventory.itemInMainHand
                 if (prevPositions[it.uniqueId] != it.location.blockLoc || (!item.type.isBlock || item.type.isAir)) {
                     prevPositions[it.uniqueId] = it.location.blockLoc
@@ -37,19 +35,22 @@ object PlayerHider {
                 it.hideAsBlock(afkCounter[it.uniqueId]!!)
             }
         }
-        listen<PlayerMoveEvent> {
-            val fakeBlock = fakeBlocks[it.player.uniqueId] ?: return@listen
-            if (it.to?.blockLoc != prevPositions[it.player.uniqueId]) {
-                fakeBlock.passengers.forEach { entity -> entity.discard() }
-                fakeBlock.discard()
-                it.player.world.playSound(it.player.location, fakeBlock.blockData.soundGroup.breakSound, 1f, 1f)
-                it.player.world.playEffect(it.to!!.blockLoc.add(0.0, 0.5, 0.0),
-                    Effect.STEP_SOUND,
-                    fakeBlock.blockData.material)
-                fakeBlocks.remove(it.player.uniqueId)
-                it.player.appear()
-                it.player.sendMessage("Sichtbar!".toComponent().color(KColors.RED))
-            }
+    }
+
+    val playerMoveEvent = listen<PlayerMoveEvent> {
+        val fakeBlock = fakeBlocks[it.player.uniqueId] ?: return@listen
+        if (it.to?.blockLoc != prevPositions[it.player.uniqueId]) {
+            fakeBlock.passengers.forEach { entity -> entity.discard() }
+            fakeBlock.discard()
+            it.player.world.playSound(it.player.location, fakeBlock.blockData.soundGroup.breakSound, 1f, 1f)
+            it.player.world.playEffect(
+                it.to!!.blockLoc.add(0.0, 0.5, 0.0),
+                Effect.STEP_SOUND,
+                fakeBlock.blockData.material
+            )
+            fakeBlocks.remove(it.player.uniqueId)
+            it.player.appear()
+            it.player.sendMessage("Sichtbar!".toComponent().color(KColors.RED))
         }
     }
 
@@ -67,9 +68,10 @@ object PlayerHider {
                 disappear()
             }
         } else if (afkTime > 0) {
-            sendMessage("Du musst noch ${AFK_TIME - afkTime}s stehenbleiben, um dich als Block zu tarnen"
-                .toComponent()
-                .color(KColors.GREEN)
+            sendMessage(
+                "Du musst noch ${AFK_TIME - afkTime}s stehenbleiben, um dich als Block zu tarnen"
+                    .toComponent()
+                    .color(KColors.GREEN)
             )
         }
     }

@@ -1,10 +1,6 @@
 package de.hglabor.youtuberideen.bastighg
 
 import com.mojang.authlib.properties.Property
-import com.mojang.brigadier.arguments.StringArgumentType
-import net.axay.kspigot.commands.argument
-import net.axay.kspigot.commands.command
-import net.axay.kspigot.commands.runs
 import net.axay.kspigot.event.listen
 import net.axay.kspigot.extensions.bukkit.appear
 import net.axay.kspigot.extensions.bukkit.disappear
@@ -37,18 +33,15 @@ import javax.imageio.ImageIO
 object SkinChanger {
     private val skins = mutableMapOf<UUID, JSONObject>()
 
-    init {
-        listen<PlayerJoinEvent> {
-            if (skins.containsKey(it.player.uniqueId)) {
-                val textureObject = skins[it.player.uniqueId]!!
-                it.player.changeSkin(textureObject["value"] as String, textureObject["signature"] as String)
-            } else {
-                async {
-                    downloadAndChangeSkin(it.player, it.player.name)
-                }
+    val playerJoinEvent = listen<PlayerJoinEvent> {
+        if (skins.containsKey(it.player.uniqueId)) {
+            val textureObject = skins[it.player.uniqueId]!!
+            it.player.changeSkin(textureObject["value"] as String, textureObject["signature"] as String)
+        } else {
+            async {
+                downloadAndChangeSkin(it.player, it.player.name)
             }
         }
-
     }
 
     //jajajja blabla async future dings das chillt mal
