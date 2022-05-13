@@ -10,6 +10,7 @@ import net.axay.kspigot.extensions.geometry.blockLoc
 import net.axay.kspigot.extensions.onlinePlayers
 import net.axay.kspigot.runnables.task
 import org.bukkit.Effect
+import org.bukkit.GameMode
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.bukkit.event.player.PlayerMoveEvent
@@ -23,7 +24,7 @@ object PlayerHider {
 
     init {
         task(period = 20) {
-            onlinePlayers.forEach {
+            onlinePlayers.filter { it.gameMode == GameMode.SURVIVAL }.forEach {
                 val item = it.inventory.itemInMainHand
                 if (prevPositions[it.uniqueId] != it.location.blockLoc || (!item.type.isBlock || item.type.isAir)) {
                     prevPositions[it.uniqueId] = it.location.blockLoc
@@ -37,7 +38,7 @@ object PlayerHider {
         }
     }
 
-    val playerMoveEvent = listen<PlayerMoveEvent> {
+    fun playerMoveEvent() = listen<PlayerMoveEvent> {
         val fakeBlock = fakeBlocks[it.player.uniqueId] ?: return@listen
         if (it.to?.blockLoc != prevPositions[it.player.uniqueId]) {
             fakeBlock.passengers.forEach { entity -> entity.discard() }

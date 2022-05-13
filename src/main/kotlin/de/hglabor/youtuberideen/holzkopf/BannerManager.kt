@@ -16,14 +16,17 @@ import org.bukkit.event.inventory.InventoryType
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.inventory.ItemStack
+import java.util.*
 
 object BannerManager {
     val lobby = WorldCreator("world_lobby").type(WorldType.FLAT).createWorld()!!
+    private val banners = mutableMapOf<UUID, ItemStack>()
 
     val interactEvent = listen<PlayerInteractEvent> {
         if (it.item?.type == Material.LOOM) {
             it.player.openInventory(Bukkit.createInventory(it.player, InventoryType.LOOM))
         } else if (it.item?.type?.name?.endsWith("_BANNER", true) == true) {
+            banners[it.player.uniqueId] = it.item!!
             it.player.addBannerAboveHead(it.item!!)
         }
     }
@@ -62,9 +65,10 @@ object BannerManager {
         }
     }
 
-    private fun Player.addBannerAboveHead(banner: ItemStack) {
+    fun Player.addBannerAboveHead(banner: ItemStack = banners.getOrDefault(this.uniqueId, ItemStack(Material.AIR))) {
         passengers.forEach { it.remove() }
         val armorStand = world.spawnEntity(eyeLocation.add(0.0, 0.5, 0.0), EntityType.ARMOR_STAND) as ArmorStand
+        armorStand.isMarker = true
         armorStand.isSmall = true
         armorStand.isVisible = false
         armorStand.equipment?.helmet = banner

@@ -1,5 +1,6 @@
 package de.hglabor.youtuberideen.wichtiger
 
+import de.hglabor.youtuberideen.sasukey.LavaManager
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.World
@@ -11,7 +12,7 @@ class VoidGenerator : ChunkGenerator() {
     override fun generateBedrock(worldInfo: WorldInfo, random: Random, xPos: Int, zPos: Int, chunkData: ChunkData) {
         for (x in 0..15) {
             for (z in 0..15) {
-                for (y in worldInfo.minHeight..SkyIslandGenerator.MIN_Y_ISLAND / 2) {
+                for (y in worldInfo.minHeight..LavaManager.defaultLavaLevel) {
                     chunkData.setBlock(x, y, z, Material.LAVA)
                 }
             }

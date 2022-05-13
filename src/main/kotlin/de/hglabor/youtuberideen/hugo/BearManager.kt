@@ -15,12 +15,12 @@ import org.bukkit.util.Vector
 import kotlin.random.Random
 
 object BearManager {
-    val joinEvent = listen<PlayerJoinEvent> {
+    fun joinEvent() = listen<PlayerJoinEvent> {
         //Purpur hahahahah YOOOO
         it.player.addAttachment(Manager, "allow.ride.polar_bear", true)
         it.player.addAttachment(Manager, "allow.ride.panda", true)
     }
-    val flameEvent = listen<PlayerInteractEvent> {
+    fun flameEvent() = listen<PlayerInteractEvent> {
         //TODO add cooldown...
         if (it.player.isInsideVehicle && (it.player.vehicle?.type == EntityType.POLAR_BEAR || it.player.vehicle?.type == EntityType.PANDA)) {
             it.player.shootFlames()

@@ -2,7 +2,14 @@ package de.hglabor.youtuberideen.game.phases
 
 import de.hglabor.youtuberideen.game.AbstractGamePhase
 import de.hglabor.youtuberideen.game.GamePhaseManager
+import de.hglabor.youtuberideen.game.GamePhaseManager.user
+import de.hglabor.youtuberideen.holzkopf.BannerManager
+import de.hglabor.youtuberideen.wichtiger.SkyIslandGenerator
 import net.axay.kspigot.event.listen
+import net.axay.kspigot.extensions.geometry.toSimple
+import org.bukkit.ChatColor
+import org.bukkit.GameMode
+import org.bukkit.Location
 import org.bukkit.block.BlockFace
 import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.block.BlockPlaceEvent
@@ -11,7 +18,7 @@ import org.bukkit.event.entity.FoodLevelChangeEvent
 import org.bukkit.event.player.*
 
 class PreInvincibilityPhase : AbstractGamePhase(GamePhaseManager) {
-    private val countdown = 4
+    private val countdown = 5
 
     init {
         gamePhaseManager.resetTimer()
@@ -22,25 +29,37 @@ class PreInvincibilityPhase : AbstractGamePhase(GamePhaseManager) {
         listeners += listen<PlayerInteractEvent> { it.isCancelled = true }
         listeners += listen<PlayerDropItemEvent> { it.isCancelled = true }
         listeners += listen<PlayerMoveEvent> {
-            //Player was just moving mouse
-            if (it.to.distanceSquared(it.from) == 0.0) {
+            if (it.player.world == BannerManager.lobby) {
                 return@listen
             }
-            if (it.player.user.spawnBlock != null) {
-                val standingBlock = it.player.location.block.getRelative(BlockFace.DOWN)
-                if (it.player.location.block == it.player.user.spawnBlock) {
-                    return@listen
-                } else if (standingBlock != it.player.user.spawnBlock) {
-                    val loc = it.player.user.spawnBlock!!.location.clone().add(0.5, 1.0, 0.5)
-                    loc.pitch = it.player.location.pitch
-                    loc.yaw = it.player.location.yaw
-                    it.player.teleport(loc)
-                }
+            //Player was just moving mouse
+            if (it.to?.distanceSquared(it.from) == 0.0) {
+                return@listen
+            }
+            val spawnLoc = it.player.user.spawnLocation ?: return@listen
+            val standingBlock = it.player.location.block.getRelative(BlockFace.DOWN)
+            if (standingBlock.location.toSimple() != spawnLoc) {
+                val loc = Location(
+                    SkyIslandGenerator.world,
+                    spawnLoc.x + 0.5,
+                    spawnLoc.y + 1,
+                    spawnLoc.z + 0.5,
+                )
+                loc.pitch = it.player.location.pitch
+                loc.yaw = it.player.location.yaw
+                it.player.teleport(loc)
             }
         }
-        listeners += listen<PlayerJoinEvent> { }
-        listeners += listen<PlayerLoginEvent> { }
-        listeners += listen<PlayerQuitEvent> {}
+        listeners += listen<PlayerJoinEvent> {
+            it.joinMessage = null
+            it.player.gameMode = GameMode.SPECTATOR
+        }
+        listeners += listen<PlayerQuitEvent> {
+            it.quitMessage = null
+            if (it.player.gameMode != GameMode.SPECTATOR) {
+                broadcast("${ChatColor.RED}${it.player.name} hat das Spiel verlassen.")
+            }
+        }
     }
 
     override fun tick(tick: Int) {

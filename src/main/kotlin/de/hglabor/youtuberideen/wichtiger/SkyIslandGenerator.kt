@@ -8,27 +8,32 @@ import net.axay.kspigot.extensions.geometry.toSimple
 import net.minecraft.core.BlockPos
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.state.BlockState
-import org.bukkit.Bukkit
-import org.bukkit.Location
-import org.bukkit.World
-import org.bukkit.WorldCreator
+import org.bukkit.*
 import org.bukkit.craftbukkit.v1_18_R2.CraftWorld
-import org.bukkit.event.player.PlayerJoinEvent
 import java.io.File
 import kotlin.random.Random
 
 object SkyIslandGenerator {
+
+    interface Workload {
+        fun execute()
+    }
+
     val world: World = WorldCreator("world_pvp").generator(VoidGenerator()).createWorld()!!
     private val schematicFolder: File = File("${Manager.dataFolder}/schematics/")
     private val schematics = mutableMapOf<String, Map<SimpleLocation3D, BlockState>>()
-    private val placeableBlocks = mutableListOf<PlaceableBlock>()
+    val placeableBlocks = mutableListOf<Workload>()
     private val islandLocations = mutableSetOf<Location>()
     private var MAX_MS_PER_TICK = 20L
     private var ISLAND_DISTANCE = 100
+    val spawnLocations = mutableSetOf<SimpleLocation3D>()
     var MIN_Y_ISLAND = 100
 
     init {
         world.worldBorder.size = 80 * 2.0
+        world.time = 1200
+        world.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false)
+        world.setGameRule(GameRule.DO_WEATHER_CYCLE, false)
 
         schematicFolder.mkdirs()
 
@@ -39,9 +44,13 @@ object SkyIslandGenerator {
         listen<ServerTickStartEvent> {
             val stopTime = System.currentTimeMillis() + MAX_MS_PER_TICK
             while (placeableBlocks.isNotEmpty() && System.currentTimeMillis() <= stopTime) {
-                placeableBlocks.removeFirstOrNull()?.setBlockInNativeChunk(world)
+                val workload = placeableBlocks.removeFirstOrNull()
+                workload?.execute()
+                if (workload is PlaceableBlock && workload.state.bukkitMaterial == Material.BEDROCK) {
+                    spawnLocations.add(workload.loc)
+                }
                 if (placeableBlocks.isEmpty()) {
-                    Manager.logger.info("Alle Inseln wurden platziert")
+                    //Manager.logger.info("Alle Inseln wurden platziert")
                 }
             }
         }
@@ -60,7 +69,7 @@ object SkyIslandGenerator {
 
             schematic.forEach { (loc, state) ->
                 val location = pasteLoc.clone().add(loc.x, loc.y, loc.z)
-                placeableBlocks.add(PlaceableBlock(location.toSimple(), state))
+                placeableBlocks.add(PlaceableBlock(world, location.toSimple(), state))
             }
         }
     }
@@ -80,12 +89,28 @@ object SkyIslandGenerator {
         return if (islandLocations.any { it.distanceSquared(location) < ISLAND_DISTANCE }) getSafeArenaSpawn() else location
     }
 
-    data class PlaceableBlock(val loc: SimpleLocation3D, val state: BlockState) {
-        fun setBlockInNativeChunk(world: World, applyPhysics: Boolean = false) {
+    fun SimpleLocation3D.toLocation(world: World): Location = Location(world, x, y, z)
+
+    data class PlaceableBlock(val world: World, val loc: SimpleLocation3D, val state: BlockState, val method: Int = 1) :
+        Workload {
+        private fun setBlockInNativeChunk(world: World, applyPhysics: Boolean = false) {
             val nmsWorld: Level = (world as CraftWorld).handle
             val chunk = nmsWorld.getChunk(loc.x.toInt() shr 4, loc.z.toInt() shr 4)
             val bp = BlockPos(loc.x, loc.y, loc.z)
             chunk.setBlockState(bp, state, applyPhysics)
+        }
+
+        private fun setBlockInNativeWorld(world: World, applyPhysics: Boolean = false) {
+            val nmsWorld: Level = (world as CraftWorld).handle
+            val bp = BlockPos(loc.x, loc.y, loc.z)
+            nmsWorld.setBlock(bp, state, if (applyPhysics) 3 else 2)
+        }
+
+        override fun execute() {
+            when (method) {
+                1 -> setBlockInNativeChunk(world)
+                2 -> setBlockInNativeWorld(world)
+            }
         }
     }
 }

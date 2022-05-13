@@ -16,6 +16,7 @@ repositories {
     mavenCentral()
     maven("https://repo.md-5.net/content/groups/public/")
     maven("https://repo.dmulloy2.net/repository/public/")
+    maven("https://papermc.io/repo/repository/maven-public/")
 }
 
 dependencies {
@@ -28,6 +29,7 @@ dependencies {
     compileOnly("org.apache.httpcomponents:httpmime:4.5.13")
     compileOnly("com.comphenix.protocol:ProtocolLib:4.7.0")
     compileOnly("LibsDisguises:LibsDisguises:10.0.28")
+    compileOnly("io.papermc.paper:paper-api:${mcVersion}-R0.1-SNAPSHOT")
 }
 
 tasks {

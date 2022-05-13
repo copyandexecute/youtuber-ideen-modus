@@ -95,6 +95,7 @@ class PvPBot(world: World, name: String) : Zombie(EntityType.ZOMBIE, (world as C
     }
 
     fun spawnAt(location: Location): PvPBot {
+        PvPBotManager.botIds.add(uuid)
         level.addFreshEntity(this)
         bukkitEntity.teleport(location)
         return this

@@ -10,7 +10,7 @@ import java.util.*
 import kotlin.random.Random.Default.nextFloat
 
 object PvPBotManager {
-    private val botIds = mutableSetOf<UUID>()
+    val botIds = mutableSetOf<UUID>()
 
     val entityDamageByEntityEvent = listen<EntityDamageByEntityEvent> {
         if (it.entity.uniqueId !in botIds) return@listen
