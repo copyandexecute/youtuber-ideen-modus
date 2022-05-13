@@ -1,6 +1,7 @@
 package de.hglabor.youtuberideen.game
 
 import IGamePhaseManager
+import de.hglabor.youtuberideen.Prefix
 import de.hglabor.youtuberideen.game.phases.LobbyPhase
 import net.axay.kspigot.extensions.geometry.SimpleLocation3D
 import net.axay.kspigot.runnables.task
@@ -24,6 +25,8 @@ object GamePhaseManager : IGamePhaseManager {
     data class User(val uuid: UUID) {
         var spawnLocation: SimpleLocation3D? = null
     }
+
+    fun Player.sendMsg(text: String) = sendMessage("$Prefix $text")
 
     val Player.user get() = users.computeIfAbsent(uniqueId) { User(uniqueId) }
 }

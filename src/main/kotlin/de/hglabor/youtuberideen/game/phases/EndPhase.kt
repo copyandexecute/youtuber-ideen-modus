@@ -32,7 +32,7 @@ class EndPhase(winner: Player?) : AbstractGamePhase(GamePhaseManager) {
         }
         listeners += listen<EntityDamageEvent> { it.isCancelled = true }
         gamePhaseManager.resetTimer()
-        broadcast("$winner hat gewonnen!")
+        broadcast("${ChatColor.YELLOW}${winner?.name} hat gewonnen!")
         onlinePlayers.forEach {
             it.inventory.clear()
             it.gameMode = GameMode.SURVIVAL
@@ -47,11 +47,11 @@ class EndPhase(winner: Player?) : AbstractGamePhase(GamePhaseManager) {
         val timeLeft = closeTime - tick
 
         if (timeLeft == 0) {
-            broadcast("Server stoppt.")
+            broadcast("${ChatColor.YELLOW}Server stoppt.")
             Bukkit.shutdown()
         } else {
             if (timeLeft == 10 || timeLeft <= 5)
-                broadcast("Server schließt in ${timeLeft}s")
+                broadcast("${ChatColor.GRAY}Server schließt in ${ChatColor.YELLOW}${timeLeft}s")
         }
     }
 

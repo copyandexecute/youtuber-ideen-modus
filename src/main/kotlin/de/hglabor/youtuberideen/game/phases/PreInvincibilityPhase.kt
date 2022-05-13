@@ -33,7 +33,7 @@ class PreInvincibilityPhase : AbstractGamePhase(GamePhaseManager) {
                 return@listen
             }
             //Player was just moving mouse
-            if (it.to?.distanceSquared(it.from) == 0.0) {
+            if (it.to.distanceSquared(it.from) == 0.0) {
                 return@listen
             }
             val spawnLoc = it.player.user.spawnLocation ?: return@listen
@@ -67,7 +67,7 @@ class PreInvincibilityPhase : AbstractGamePhase(GamePhaseManager) {
         if (timeLeft == 0) {
             startNextPhase()
         } else {
-            broadcast("Die Runde beginnt in ${timeLeft}s")
+            broadcast("${ChatColor.GRAY}Die Runde beginnt in ${ChatColor.YELLOW}${timeLeft}s")
         }
     }
 

@@ -2,7 +2,6 @@ package de.hglabor.youtuberideen.sasukey
 
 import de.hglabor.youtuberideen.wichtiger.SkyIslandGenerator
 import net.axay.kspigot.event.listen
-import net.axay.kspigot.extensions.events.isRightClick
 import net.axay.kspigot.extensions.geometry.SimpleLocation3D
 import net.minecraft.world.level.block.Blocks
 import org.bukkit.FluidCollisionMode

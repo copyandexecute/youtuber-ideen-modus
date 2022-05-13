@@ -1,5 +1,6 @@
 package de.hglabor.youtuberideen.bastighg
 
+import de.hglabor.youtuberideen.game.mechanic.LootTables
 import net.axay.kspigot.event.listen
 import net.axay.kspigot.runnables.task
 import net.axay.kspigot.runnables.taskRunLater
@@ -12,7 +13,9 @@ import org.bukkit.block.BlockFace
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.Firework
 import org.bukkit.entity.Player
+import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.block.BlockPlaceEvent
+import kotlin.random.Random
 
 object CakeManager {
     fun winEvent(callBack: (Player) -> (Unit)) = listen<BlockPlaceEvent> {
@@ -23,6 +26,16 @@ object CakeManager {
         celebrateWinner(block.location)
         callBack.invoke(it.player)
     }
+
+    fun blockBreakEvent() = listen<BlockBreakEvent> {
+        val block = it.block
+        if (block.type == Material.CAKE) {
+            getRandomCakeIngridients().forEach { item -> block.world.dropItem(block.location, item) }
+        }
+    }
+
+    fun getRandomCakeIngridients() =
+        LootTables.cakeIngridients.shuffled().take(Random.nextInt(0, LootTables.cakeIngridients.size))
 
     private fun celebrateWinner(location: Location) {
         task(howOften = 3, period = 5) {

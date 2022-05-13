@@ -9,10 +9,12 @@ import de.hglabor.youtuberideen.wichtiger.SkyIslandGenerator.toLocation
 import net.axay.kspigot.event.listen
 import net.axay.kspigot.extensions.bukkit.feedSaturate
 import net.axay.kspigot.extensions.bukkit.heal
-import net.axay.kspigot.extensions.geometry.SimpleLocation3D
 import net.axay.kspigot.extensions.geometry.toSimple
 import net.axay.kspigot.extensions.onlinePlayers
-import org.bukkit.*
+import org.bukkit.Bukkit
+import org.bukkit.ChatColor
+import org.bukkit.GameMode
+import org.bukkit.Location
 import org.bukkit.block.BlockFace
 import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.block.BlockPlaceEvent
@@ -69,12 +71,12 @@ class SpawnPhase : AbstractGamePhase(GamePhaseManager) {
                 it.player.teleport(loc)
             }
         }
-        broadcast("Teleportiere Spieler")
+        broadcast("${ChatColor.YELLOW}Teleportiere Spieler")
     }
 
     override fun tick(tick: Int) {
         if (toTeleport.isEmpty()) {
-            broadcast("Alle Spieler teleportiert")
+            broadcast("${ChatColor.YELLOW}Alle Spieler teleportiert")
             startNextPhase()
             return
         }
@@ -94,7 +96,7 @@ class SpawnPhase : AbstractGamePhase(GamePhaseManager) {
             }
         }
         toTeleport.removeAll(teleported)
-        broadcast("${toTeleportAmount - toTeleport.size}/${toTeleportAmount} Spieler teleportiert")
+        broadcast("${ChatColor.YELLOW}${toTeleportAmount - toTeleport.size}${ChatColor.GRAY}/${ChatColor.YELLOW}${toTeleportAmount} ${ChatColor.GRAY}Spieler teleportiert")
     }
 
     override fun nextPhase(): AbstractGamePhase = PreInvincibilityPhase()

@@ -1,8 +1,10 @@
 package de.hglabor.youtuberideen.game.phases
 
+import de.hglabor.youtuberideen.bastighg.CakeManager
 import de.hglabor.youtuberideen.einfachgustaf.PlayerHider
 import de.hglabor.youtuberideen.game.AbstractGamePhase
 import de.hglabor.youtuberideen.game.GamePhaseManager
+import de.hglabor.youtuberideen.game.mechanic.ChestLoot
 import de.hglabor.youtuberideen.holzkopf.BannerManager.addBannerAboveHead
 import de.hglabor.youtuberideen.hugo.BearManager
 import de.hglabor.youtuberideen.sasukey.LavaManager
@@ -24,12 +26,14 @@ class InvincibilityPhase : AbstractGamePhase(GamePhaseManager) {
     private val invincibilityAmount: Int = 5
 
     init {
-        broadcast("Die Schutzzeit beginnt!")
+        broadcast("${ChatColor.YELLOW}Die Schutzzeit beginnt!")
         gamePhaseManager.resetTimer()
         PlayerHider
         listeners += PlayerHider.playerMoveEvent()
         listeners += BearManager.flameEvent()
         listeners += LavaManager.interactEvent()
+        listeners += CakeManager.blockBreakEvent()
+        listeners += ChestLoot.playerOpenChestEvent()
         listeners += listen<EntityDamageEvent> { it.isCancelled = true }
         listeners += listen<PlayerJoinEvent> {
             it.joinMessage = null
@@ -71,9 +75,12 @@ class InvincibilityPhase : AbstractGamePhase(GamePhaseManager) {
     }
 
     override fun tick(tick: Int) {
+        val timeLeft = invincibilityAmount - tick
         if (tick == invincibilityAmount) {
-            broadcast("Die Schutzzeit ist vorbei!")
+            broadcast("${ChatColor.YELLOW}Die Schutzzeit ist vorbei!")
             startNextPhase()
+        } else if (timeLeft.mod(5) == 0 || timeLeft <= 5) {
+            broadcast("${ChatColor.GRAY}Die Schutzzeit endet in ${ChatColor.YELLOW}${timeLeft}s")
         }
     }
 

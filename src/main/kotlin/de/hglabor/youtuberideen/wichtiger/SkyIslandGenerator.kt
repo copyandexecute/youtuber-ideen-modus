@@ -10,6 +10,7 @@ import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.state.BlockState
 import org.bukkit.*
 import org.bukkit.craftbukkit.v1_18_R2.CraftWorld
+import org.bukkit.metadata.FixedMetadataValue
 import java.io.File
 import kotlin.random.Random
 
@@ -46,8 +47,13 @@ object SkyIslandGenerator {
             while (placeableBlocks.isNotEmpty() && System.currentTimeMillis() <= stopTime) {
                 val workload = placeableBlocks.removeFirstOrNull()
                 workload?.execute()
-                if (workload is PlaceableBlock && workload.state.bukkitMaterial == Material.BEDROCK) {
-                    spawnLocations.add(workload.loc)
+                if (workload is PlaceableBlock) {
+                    if (workload.state.bukkitMaterial == Material.BEDROCK) {
+                        spawnLocations.add(workload.loc)
+                    } else if (workload.state.bukkitMaterial == Material.CHEST) {
+                        world.getBlockAt(workload.loc.toLocation(world))
+                            .setMetadata("lootchest", FixedMetadataValue(Manager, null))
+                    }
                 }
                 if (placeableBlocks.isEmpty()) {
                     //Manager.logger.info("Alle Inseln wurden platziert")

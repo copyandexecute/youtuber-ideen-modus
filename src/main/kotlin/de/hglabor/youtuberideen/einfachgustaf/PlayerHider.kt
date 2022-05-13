@@ -1,14 +1,13 @@
 package de.hglabor.youtuberideen.einfachgustaf
 
-import net.axay.kspigot.chat.KColors
-import net.axay.kspigot.chat.sendMessage
+import de.hglabor.youtuberideen.game.GamePhaseManager.sendMsg
 import net.axay.kspigot.event.listen
 import net.axay.kspigot.extensions.bukkit.appear
 import net.axay.kspigot.extensions.bukkit.disappear
-import net.axay.kspigot.extensions.bukkit.toComponent
 import net.axay.kspigot.extensions.geometry.blockLoc
 import net.axay.kspigot.extensions.onlinePlayers
 import net.axay.kspigot.runnables.task
+import org.bukkit.ChatColor
 import org.bukkit.Effect
 import org.bukkit.GameMode
 import org.bukkit.Location
@@ -40,18 +39,18 @@ object PlayerHider {
 
     fun playerMoveEvent() = listen<PlayerMoveEvent> {
         val fakeBlock = fakeBlocks[it.player.uniqueId] ?: return@listen
-        if (it.to?.blockLoc != prevPositions[it.player.uniqueId]) {
+        if (it.to.blockLoc != prevPositions[it.player.uniqueId]) {
             fakeBlock.passengers.forEach { entity -> entity.discard() }
             fakeBlock.discard()
             it.player.world.playSound(it.player.location, fakeBlock.blockData.soundGroup.breakSound, 1f, 1f)
             it.player.world.playEffect(
-                it.to!!.blockLoc.add(0.0, 0.5, 0.0),
+                it.to.blockLoc.add(0.0, 0.5, 0.0),
                 Effect.STEP_SOUND,
                 fakeBlock.blockData.material
             )
             fakeBlocks.remove(it.player.uniqueId)
             it.player.appear()
-            it.player.sendMessage("Sichtbar!".toComponent().color(KColors.RED))
+            it.player.sendMsg("${ChatColor.YELLOW}Sichtbar!")
         }
     }
 
@@ -65,15 +64,11 @@ object PlayerHider {
                 fakeBlocks[uniqueId] =
                     FakeBlock(this.world, item.type.createBlockData()).spawnAt(location.blockLoc.add(0.5, 0.0, 0.5))
                 playSound(location, item.type.createBlockData().soundGroup.placeSound, 1f, 1f)
-                sendMessage("Getarnt!".toComponent().color(KColors.GREEN))
+                sendMsg("${ChatColor.YELLOW}Getarnt!")
                 disappear()
             }
         } else if (afkTime > 0) {
-            sendMessage(
-                "Du musst noch ${AFK_TIME - afkTime}s stehenbleiben, um dich als Block zu tarnen"
-                    .toComponent()
-                    .color(KColors.GREEN)
-            )
+            sendMsg("${ChatColor.GRAY}Du musst noch ${ChatColor.YELLOW}${AFK_TIME - afkTime}s ${ChatColor.GRAY}stehenbleiben, um dich als Block zu tarnen")
         }
     }
 }

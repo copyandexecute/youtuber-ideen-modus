@@ -27,6 +27,7 @@ class PvPPhase : AbstractGamePhase(GamePhaseManager) {
         listeners += LevitationManager.dismountEvent
         listeners += BloodManager.moveEvent
         listeners += BloodManager.damageByEntityEvent
+        listeners += CakeManager.blockBreakEvent()
         listeners += CakeManager.winEvent {
             winner = it
             startNextPhase()
@@ -48,8 +49,9 @@ class PvPPhase : AbstractGamePhase(GamePhaseManager) {
         listeners += listen<PlayerDeathEvent> {
             if (it.player.gameMode == GameMode.SURVIVAL) {
                 it.isCancelled = true
+                it.drops.addAll(CakeManager.getRandomCakeIngridients())
                 it.drops.forEach { item -> it.player.world.dropItem(it.player.location, item) }
-                broadcast("${it.deathMessage}")
+                broadcast("${ChatColor.YELLOW}${it.deathMessage}")
                 it.deathMessage(null)
                 it.entity.passengers.clear()
                 it.entity.gameMode = GameMode.SPECTATOR
@@ -62,7 +64,7 @@ class PvPPhase : AbstractGamePhase(GamePhaseManager) {
         if (LavaManager.currentLavaLevel < 200) {
             LavaManager.riseLava(1)
             if (LavaManager.currentLavaLevel.mod(10) == 0) {
-                broadcast("Die Lava ist auf Höhe ${LavaManager.currentLavaLevel}")
+                broadcast("${ChatColor.GRAY}Die Lava ist auf Höhe ${ChatColor.YELLOW}${LavaManager.currentLavaLevel}")
             }
         }
     }

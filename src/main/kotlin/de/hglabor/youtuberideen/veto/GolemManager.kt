@@ -1,8 +1,6 @@
 package de.hglabor.youtuberideen.veto
 
 import de.hglabor.youtuberideen.Manager
-import net.axay.kspigot.commands.command
-import net.axay.kspigot.commands.runs
 import net.axay.kspigot.event.listen
 import org.bukkit.event.player.PlayerJoinEvent
 

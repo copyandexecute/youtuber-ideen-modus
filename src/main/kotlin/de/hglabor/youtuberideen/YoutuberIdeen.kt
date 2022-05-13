@@ -3,6 +3,7 @@ package de.hglabor.youtuberideen
 import de.hglabor.youtuberideen.game.GamePhaseManager
 import de.hglabor.youtuberideen.wichtiger.SkyIslandGenerator
 import net.axay.kspigot.main.KSpigot
+import org.bukkit.ChatColor
 
 class YoutuberIdeen : KSpigot() {
     companion object {
@@ -25,5 +26,5 @@ class YoutuberIdeen : KSpigot() {
 }
 
 val Manager by lazy { YoutuberIdeen.INSTANCE }
-val Prefix: String = "[Youtuber-Ideen]"
+val Prefix: String = "${ChatColor.GRAY}[${ChatColor.RED}Youtuber${ChatColor.WHITE}-Ideen${ChatColor.GRAY}]"
 
