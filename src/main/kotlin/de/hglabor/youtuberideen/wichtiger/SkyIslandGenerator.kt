@@ -2,6 +2,7 @@ package de.hglabor.youtuberideen.wichtiger
 
 import com.destroystokyo.paper.event.server.ServerTickStartEvent
 import de.hglabor.youtuberideen.Manager
+import de.hglabor.youtuberideen.game.mechanic.LootTables
 import net.axay.kspigot.event.listen
 import net.axay.kspigot.extensions.geometry.SimpleLocation3D
 import net.axay.kspigot.extensions.geometry.toSimple
@@ -9,8 +10,8 @@ import net.minecraft.core.BlockPos
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.state.BlockState
 import org.bukkit.*
+import org.bukkit.block.Chest
 import org.bukkit.craftbukkit.v1_18_R2.CraftWorld
-import org.bukkit.metadata.FixedMetadataValue
 import java.io.File
 import kotlin.random.Random
 
@@ -51,8 +52,18 @@ object SkyIslandGenerator {
                     if (workload.state.bukkitMaterial == Material.BEDROCK) {
                         spawnLocations.add(workload.loc)
                     } else if (workload.state.bukkitMaterial == Material.CHEST) {
-                        world.getBlockAt(workload.loc.toLocation(world))
-                            .setMetadata("lootchest", FixedMetadataValue(Manager, null))
+                        val block = world.getBlockAt(workload.loc.toLocation(world))
+                        val chest = block.state as Chest
+                        repeat(26) { slot ->
+                            if (Random.nextInt(1, 100) >= 10) {
+                                val probability = Random.nextInt(1, 100)
+                                val items = LootTables.normal.filter { it.probability + 10 >= probability }.shuffled()
+                                val lootItem = items.random()
+                                val item = lootItem.itemStack
+                                item.amount = Random.nextInt(lootItem.minAmount, lootItem.maxAmount)
+                                chest.inventory.setItem(slot, item)
+                            }
+                        }
                     }
                 }
                 if (placeableBlocks.isEmpty()) {

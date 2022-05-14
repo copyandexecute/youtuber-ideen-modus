@@ -23,7 +23,7 @@ import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
 
 class InvincibilityPhase : AbstractGamePhase(GamePhaseManager) {
-    private val invincibilityAmount: Int = 5
+    private val invincibilityAmount: Int = 30
 
     init {
         broadcast("${ChatColor.YELLOW}Die Schutzzeit beginnt!")
@@ -33,7 +33,7 @@ class InvincibilityPhase : AbstractGamePhase(GamePhaseManager) {
         listeners += BearManager.flameEvent()
         listeners += LavaManager.interactEvent()
         listeners += CakeManager.blockBreakEvent()
-        listeners += ChestLoot.playerOpenChestEvent()
+       // listeners += ChestLoot.playerOpenChestEvent()
         listeners += listen<EntityDamageEvent> { it.isCancelled = true }
         listeners += listen<PlayerJoinEvent> {
             it.joinMessage = null

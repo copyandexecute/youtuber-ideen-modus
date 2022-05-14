@@ -57,6 +57,7 @@ class LobbyPhase : AbstractGamePhase(GamePhaseManager) {
         command("start") {
             requiresPermission("hglabor.admin")
             runs {
+                broadcast("starte haha norisk")
                 startNextPhase()
             }
         }

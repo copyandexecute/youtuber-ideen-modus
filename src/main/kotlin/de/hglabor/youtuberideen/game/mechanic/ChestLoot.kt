@@ -20,7 +20,7 @@ object ChestLoot {
         if (block.state is Chest) {
             val chest = block.state as Chest
             repeat(26) { slot ->
-                if (Random.nextInt(1, 100) >= 80) {
+                if (Random.nextInt(1, 100) >= 30) {
                     val probability = Random.nextInt(1, 100)
                     val items = LootTables.normal.filter { it.probability >= probability }.shuffled()
                     val lootItem = items.random()
